@@ -1,0 +1,187 @@
+{% extends 'boutique/index.html' %}
+{% load static %}
+
+{% block title %}
+	Procédure de paiement en ligne
+{% endblock title %}
+
+{% block content %}
+
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">Paiement</h1>
+					<ol class="breadcrumb">
+						<li><a href="{% url 'index' %}">Accueil</a></li>
+						<li class="active">paiement</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<div class="page-wrapper">
+   <div class="checkout shopping">
+      <div class="container">
+         <div class="row">
+            <h5>NB : Le système de paiement ci-dessous n'est pas encore mis au point, donc vous ne perdrez aucun francs</h5><br>
+            <div class="col-md-8">
+               <form method="POST">
+                  {% csrf_token %}
+               <div class="block billing-details">
+                  <h4 class="widget-title">Détails de facturation</h4>
+                  
+                     <div class="form-group">
+                        <label for="full_name">Nom complet</label>
+                        <input type="text" class="form-control" id="nom_complet" placeholder="">
+                     </div>
+                     <div class="form-group">
+                        <label for="user_address">Adresse</label>
+                        <input type="text" class="form-control" id="adresse" placeholder="">
+                     </div>
+                     <div class="checkout-country-code clearfix">
+                        <div class="form-group">
+                           <label for="user_post_code">Code postal</label>
+                           <input type="text" class="form-control" id="user_post_code" name="codepostal" value="">
+                        </div>
+                        <div class="form-group" >
+                           <label for="user_city">Ville</label>
+                           <input type="text" class="form-control" id="user_city" name="ville" value="">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="user_country">Pays</label>
+                        <input type="text" class="form-control" id="pays" placeholder="">
+                     </div>
+                  
+               </div>
+               <div class="block">
+                  <h4 class="widget-title">Méthode de paiement</h4>
+                  <select style="height:50px" name="methodePaiement"class="form-control">
+                     <option value="--------------------">--------------------</option>
+                     <option value="mobileMoney">MOBILE MONEY</option>
+                     <option value="airtelMoney">AIRTEL MONEY</option>
+                     <option value="carteDeCredit">CARTE DE CREDIT</option>
+                  </select>
+                  <div style="margin-top:20px" id="mobileMoney">
+                     <p>Entrer votre numéro de compte Mobile Money</p>
+                     <input type="text" class="form-control" name="mobileMoney">
+                  </div>
+                  <div  style="margin-top:20px" id="airtelMoney">
+                     <p>Entrer votre numéro de compte Airtel Money</p>
+                     <input type="text" class="form-control" name="airtelMoney">
+                  </div>
+                  <div  style="margin-top:20px" id="carteDeCredit" class="checkout-product-details">
+                     <p>Détails concernant la carte de crédit (Paiement sécurisé)</p>
+                     <div class="payment">
+                        <div class="card-details">
+                           
+                              <div class="form-group">
+                                 <label for="card-number">Numéro de Carte <span class="required">*</span></label>
+                                 <input  id="card-number" class="form-control"   type="tel" placeholder="•••• •••• •••• ••••">
+                              </div>
+                              <div class="form-group half-width padding-right">
+                                 <label for="card-expiry">Expiration (MM/AA) <span class="required">*</span></label>
+                                 <input id="card-expiry" class="form-control" type="tel" placeholder="MM / AA">
+                              </div>
+                              <div class="form-group half-width padding-left">
+                                 <label for="card-cvc">Code de carte <span class="required">*</span></label>
+                                 <input id="card-cvc" class="form-control"  type="tel" maxlength="4" placeholder="CVC" >
+                              </div>
+                           
+                        </div>
+                     </div>
+                  </div>
+                  <button id="boutonPayer" type="submit" class="btn btn-main mt-20">Passer la Commande</button>
+               </div>
+            </form>
+            </div>
+            <div class="col-md-4">
+               <div class="product-checkout-details">
+                  <div class="block">
+                     <h4 class="widget-title">Resumé des articles</h4>
+                     <div class="media product-card">
+                     	{% for article in articles %}
+                         <div class="row">
+	                 	        <a style="margin-bottom:30px;height:80;width:80px;" class="pull-left" href="{% url 'details_produit' article.produit.slug %}">
+		                           <img class="media-object" style="height:100%;width:100%;" src="{{article.produit.image.url}}" alt="{{article.produit.nom}}" />
+		                       </a>	
+	                     	<div class="pull-left" style="margin-left:20px" class="media-body" class="col-md-6">
+	         	                <h4 class="media-heading"><a href="{% url 'details_produit' article.produit.slug %}">{{article.produit.nom}}</a></h4>
+                              <p>{{article.produit.prix}} FCFA</p><br>
+	                           <p style="margin-top: -30px">Quantité : <b>{{article.quantite}}</b></p><br>
+	                     	</div>
+                     	</div>
+                     	{% endfor %}
+                     </div>
+                     <div class="discount-code">
+                        <p>Avez vous une remise ? <a data-toggle="modal" data-target="#coupon-modal" href="#!">Entrer la ici</a></p>
+                     </div>
+                     <div class="summary-total">
+                        <span>Total</span>
+                        <span>{{total}} FCFA</span>
+                     </div>
+                     <div class="verified-icon">
+                        <img src="{% static 'images/shop/verified.png' %}">
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+   <!-- Modal -->
+   <div class="modal fade" id="coupon-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-body">
+               <form>
+                  <div class="form-group">
+                     <input class="form-control" type="text" placeholder="Entrer le code du coupon">
+                  </div>
+                  <button type="submit" class="btn btn-main">Appliquer le coupon</button>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+{% endblock content %}
+
+{% block jquery %}
+  <script type="text/javascript">
+   $(function(){
+      $("#mobileMoney").hide();
+      $("#airtelMoney").hide();
+      $("#carteDeCredit").hide();
+      $("#boutonPayer").hide();
+
+      $("select[name='methodePaiement']").on("change", function(){
+         var valeur = $(this).val();
+         if(valeur == 'mobileMoney'){
+            $("#airtelMoney").hide(300);
+            $("#carteDeCredit").hide(300);
+            $("#mobileMoney").show(300);
+            $("#boutonPayer").show(300);
+         }else if(valeur == 'airtelMoney'){
+            $("#mobileMoney").hide(300);
+            $("#carteDeCredit").hide(300);
+            $("#airtelMoney").show(300);
+            $("#boutonPayer").show(300);
+         }else if(valeur == 'carteDeCredit'){
+            $("#mobileMoney").hide(300);
+            $("#airtelMoney").hide(300);
+            $("#carteDeCredit").show(300);
+            $("#boutonPayer").show(300);
+         }else{
+            $("#mobileMoney").hide(300);
+            $("#airtelMoney").hide(300);
+            $("#carteDeCredit").hide(300);  
+            $("#boutonPayer").hide(300);          
+         }
+      });
+   });
+  </script>   
+{% endblock jquery %}

@@ -1,0 +1,64 @@
+{% extends "boutique/index.html" %}
+
+{% block title %}
+	Profile de l'utilisateur
+{% endblock title %}
+
+{% block content %}
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">Tableau de bord</h1>
+					<ol class="breadcrumb">
+						<li><a href="{% url 'index' %}">Accueil</a></li>
+						<li class="active">mon compte</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% if messages %}
+    {% for message in messages %}
+        <div  {% if message.tags == 'error' %}
+              class="alert alert-danger"
+              {% else %}
+              class="alert alert-{{message.tags}}"
+              {% endif %} >
+          {{ message }}
+        </div>
+    {% endfor %}
+  {% endif %}
+<section class="user-dashboard page-wrapper">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="dashboard-wrapper dashboard-user-profile">
+          <div class="media">
+          	<center>
+            <div  class="col-md-6 col-12" class="pull-left text-center" href="#!">
+              <img class="media-object user-img" src="{{user.photo.url}}" alt="{{user.username}}">
+            </div>
+             </center>
+            <div class="col-12" class="media-body">
+              <ul class="user-profile-list">
+                <li>Nom d'utilisateur : <span>{{user.username}}</span></li>
+                <li>Email : <span>{{user.email}}</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <center>
+   <div style="margin-top:20px">
+    <a href="{% url 'modifier_profile' %}" class="btn btn-main text-center">Modifier votre profile</a>
+  </div>
+  </center>
+</section>
+
+{% endblock content %}

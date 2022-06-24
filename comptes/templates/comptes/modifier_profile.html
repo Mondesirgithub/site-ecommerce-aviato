@@ -1,0 +1,42 @@
+{% extends "boutique/index.html" %}
+
+{% block title %}
+	Modification du Profile de l'utilisateur
+{% endblock title %}
+
+{% block content %}
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">Tableau de bord</h1>
+					<ol class="breadcrumb">
+						<li><a href="{% url 'index' %}">Accueil</a></li>
+						<li class="active">mon compte</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="user-dashboard page-wrapper">
+  <div class="container">
+    <div class="container">
+      <div class="container">
+    <form method="POST" enctype="multipart/form-data">
+    <div class="row">
+      {% csrf_token %}
+      {{form.as_p}}
+    <div style="margin-top:20px">
+      <button type="submit" class="btn btn-main text-center">Modifier votre profile</button>
+    </div>
+    </div>
+    </form>
+      </div>
+    </div>
+  <center>
+  </center>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,187 @@
+{% extends 'boutique/index.html' %}
+
+{% block title %}
+	Le Panier de {{user.username}}
+{% endblock title %}
+
+{% block content %}
+
+{% if articles.count == 0 %}
+{% if messages %}
+    {% for message in messages %}
+        <div  {% if message.tags == 'error' %}
+              class="alert alert-danger"
+              {% else %}
+              class="alert alert-{{message.tags}}"
+              {% endif %} >
+          {{ message }}
+        </div>
+    {% endfor %}
+  {% endif %}
+<section class="empty-cart page-wrapper">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="block text-center">
+        	<i class="tf-ion-ios-cart-outline"></i>
+          	<h2 class="text-center">Votre panier est actuellement vide</h2>
+          	<p>Veuillez rajouter des articles de produits à l'intérieur <br> Bon shopping !</p>
+          	<a href="{% url 'boutique' %}" class="btn btn-main mt-20">Retour vers le Shop</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% else %}
+
+
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">Panier</h1>
+					<ol class="breadcrumb">
+						<li><a href="{% url 'index' %}">Accueil</a></li>
+						<li class="active">panier</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div>
+  <center>
+      <h3>Vous avez {{articles.count}} articles dans votre panier</h3>
+  </center>
+</div>
+
+<div class="page-wrapper">
+  <div class="cart shopping">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="block">
+            <div class="product-list">
+            {% if messages %}
+                {% for message in messages %}
+                    <div  {% if message.tags == 'error' %}
+                          class="alert alert-danger"
+                          {% else %}
+                          class="alert alert-{{message.tags}}"
+                          {% endif %} >
+                      {{ message }}
+                    </div>
+                {% endfor %}
+              {% endif %}
+                  <form method="POST" action="{% url 'mise_a_jour' %}">
+                  {% csrf_token %}
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Produit</th>
+                      <th class="">Prix</th>
+                      <th class="">Quantité</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  	{% for article in articles %}          		
+                    <tr>
+                      <td>
+                          <center>
+                            <a href="{% url 'details_produit' article.produit.slug %}"> <img width="80" src="{{article.produit.image.url}}" alt="" /></a><br>
+                            <a>{{article.produit.nom}}</a>
+                            <p>Quantité : <b>{{article.quantite}}</b></p>
+                          </center>
+                      </td>
+                      <td>{{article.produit.prix}} FCFA</td>
+                      <td>
+                            <center>
+                            <div class="product-quantity">
+                              <div style="width:130px" class="product-quantity-slider">
+                                <input style="text-align:center" id="product-quantity" type="number" value="1" name="product-quantity{{forloop.counter}}">
+                              </div>
+                            </div>
+                            </center>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    <table class="table">
+                      <br><br>
+                      <tr>
+                        <th>Total du montant</th>
+                        <th>{{total}} FCFA  </th>
+                      </tr>
+                    </table>
+                    <br>
+                  </tbody>
+                </table>
+                <center>
+                  <button type="submit" class="btn btn-main">METTRE A JOUR LE PANIER</button>
+                </center>  
+                  <br>
+              </form>
+                <center>
+                <a href="{% url 'vider_panier' %}" class="btn btn-main">VIDER LE PANIER</a>
+                <br><br>
+                <a href="{% url 'paiement' %}" style="margin-top:0px" class="btn btn-main">PASSER AU PAIEMENT</a>
+                </center>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock content %}
+
+{% block jquery %}
+  <script>
+  $(function(){
+    $('input[id=\'product-quantity\']').TouchSpin();
+
+    {% for article in articles %}
+      $("input[name='product-quantity{{forloop.counter}}']").val("{{article.quantite}}")
+    {% endfor %}
+    /*$(".mise_a_jour").hide();
+
+    $(".lien1").click(function(){
+      $('.lien1').hide();
+      $('.lien2').hide();
+      $('.lien3').hide();
+      $(this).parent(".LesBtn").prev().show();
+      var lien2 = $(this).next().next();
+      var lien3 = lien2.next().next();
+      var mise_a_jour = $(this).parent(".LesBtn").prev();
+      var augmenter = mise_a_jour.children().children()[1].children[0];
+      var retirer = mise_a_jour.children().children()[1].children[1];
+      augmenter.classList.add('hide');
+      retirer.classList.add('show');
+      $("input[name='quantiteProduit']").val("-1");
+
+    });*/
+
+    /*$(".lien2").click(function(){
+      $('.lien1').hide();
+      $('.lien2').hide();
+      $('.lien3').hide();
+      $(this).parent(".LesBtn").prev().show();
+      var lien1 = $(this).prev().prev();
+      var lien3 = $(this).next().next();
+      var mise_a_jour = $(this).parent(".LesBtn").prev();
+      var retirer = mise_a_jour.children().children()[1].children[1];
+      var augmenter = mise_a_jour.children().children()[1].children[0];
+      retirer.classList.add('hide');
+      augmenter.classList.add('show');
+      $("input[name='quantiteProduit2']").val("-1");
+    });*/
+
+
+  });
+
+
+
+  </script>
+{% endblock jquery %}

@@ -1,0 +1,23 @@
+{% extends "boutique/index.html" %}
+{% load static %}
+
+{% block title %}
+Fin de la procédure de paiement
+{% endblock title %}
+
+{% block content %}
+<section class="page-wrapper success-msg">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="block text-center">
+          <i class="tf-ion-android-checkmark-circle"></i>
+          <h2 class="text-center">Merci pour votre paiement !</h2>
+          <p>Nous allons envoyer vers vous un membre de notre équipe de livraison afin que vous receviez votre colis</p>
+          <a href="{% url 'boutique' %}" class="btn btn-main mt-20">Coninuer votre shopping</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,55 @@
+{% extends "boutique/index.html" %}
+{% load static %}
+
+{% block title %}
+Historique des commandes
+{% endblock title %}
+
+{% block content %}
+<section class="page-wrapper success-msg">
+  {% if articles.count == 0 %}
+    <br><br><br><br>
+    <h2 style="margin-top:-20px" class="text-center">Vous n'avez encore rien commandé !</h2>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    {% else %}
+
+  
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="block text-center">
+          <h2 style="margin-top:-20px" class="text-center">Voici les articles que vous avez déjà commandés !</h2>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Produit</th>
+                      <th>Prix</th>
+                      <th>Date de la commande</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for article in articles %}             
+                    <tr>
+                      <td>                  
+                          <center>
+                            <a href="{% url 'details_produit' article.produit.slug %}"> <img width="80" src="{{article.produit.image.url}}" alt="{{article.produit.nom}}" /></a><br>
+                            <b>{{article.produit.nom}}</b>
+                            <p>Quantité : <b>{{article.quantite}}</b></p>
+                          </center>
+                      </td>
+                      <td>{{article.produit.prix}} FCFA</td>
+                      <td>
+                        <p>{{article.date_commande}}</p>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    <br>
+                  </tbody>
+                </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock content %}

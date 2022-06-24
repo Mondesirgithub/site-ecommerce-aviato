@@ -1,0 +1,201 @@
+{% extends "boutique/index.html" %}
+{% load static %}
+
+{% block title %}
+	Boutique
+{% endblock title %}
+
+{% block content %}
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">Magasin</h1>
+					<ol class="breadcrumb">
+						<li><a href="index.html">Accueil</a></li>
+						<li class="active">magasin</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section>
+  <center>
+  <div id="choixDeRecherche" style="margin-bottom:25px">
+    <p>
+      Effectuer la recherche par rappot au
+      <select style="width: 200px" name="choix" class="form-control">
+        <option value="----------">----------</option>
+        <option value="Nom_du_produit">Nom du produit</option>
+        <option value="Nom_de_la_categorie">Nom de la catégorie</option>
+        <option value="Prix">Prix du produit</option>
+      </select>
+    </p>
+  </div>
+  </center>
+   <form action="{% url 'traitementDeLaRecherche' %}" method="POST">
+    {% csrf_token %}
+    <center>
+      <div id="rechercherParNom">
+            <input style="width: 200px; height:37px" class="form-control" placeholder="tapez le nom" type="text" name="nom">
+      </div>
+      <div id="rechercherParPrix">
+            <input style="width: 200px" class="form-control" placeholder="Prix minimal" type="number" name="prixmin">
+            <br>
+            <input style="width: 200px" class="form-control" placeholder="Prix maximal" type="number" name="prixmax">
+      </div>
+      <div id="rechercherParCategorie">
+            <select style="width: 200px" class="form-control" name="categorie">
+            {% for categorie in categories %}              
+              <option value="{{categorie.nom}}">{{categorie.nom}}</option>
+            {% endfor %}
+            </select>
+      </div>
+
+      <button id="buttonRechercher" style="margin-top:15px" type="submit" class="btn btn-main text-center">Rechercher</button>
+    {% if messages %}
+        {% for message in messages %}
+            <div style="margin-top:15px;" {% if message.tags == 'error' %}
+                  class="alert alert-danger"
+                  {% else %}
+                  class="alert alert-{{message.tags}}"
+                  {% endif %} >
+              {{ message }}
+            </div>
+        {% endfor %}
+      {% endif %}
+    </center>
+    </form>
+</section>
+{% if produits.count > 0 %}
+<section class="products section bg-gray">
+      <div class="container">
+          <div class="row">
+              {% for produit in produits %}
+              <div class="col-md-4 col-sm-4 col-lg-4 col-xs-12">
+                  <div style="margin-bottom:60px" class="product-item">
+                      <div data-toggle="modal" data-target="#{{produit.slug}}-modal" class="product-thumb">
+                          <div style="height:320px">
+                             <img style="width:100%;height:100%;" src="{{ produit.image.url }}" alt="{{ produit.nom }}" />
+                          </div>
+                          <div class="preview-meta">
+                              <ul>
+                                  <li>
+                                      <a href="#!"><i class="tf-ion-android-search"></i></a>
+                                  </li>
+                              </ul>
+                            </div>
+                      </div>
+                      <div class="product-content">
+                          <h4><a href="product-single.html">{{produit.nom}}</a> </h4>
+                          <h6><i>categorie : {{produit.categorie}} </i></h6>
+                          <b>{{produit.prix}} FCFA</b>
+                      </div>
+                  </div>
+              </div>
+          <!-- Modal -->
+          <div class="modal product-modal fade" id="{{produit.slug}}-modal">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <i class="tf-ion-close"></i>
+              </button>
+                <div class="modal-dialog" role="document">
+                  <div class="text-center" class="modal-content">
+                        <div style="background-color:white; margin-left:-20px" class="modal-body">
+                          <div class="row">
+                              <div class="col-md-8 col-sm-6 col-xs-12">
+                                <center>
+                              <div style="height:280px;max-width:300px;">
+                                 <img style="width:100%;height:100%" src="{{ produit.image.url }}" alt="{{ produit.nom }}" />
+                              </div>
+                                </center>
+                              </div>
+                              <div class="col-md-4 col-sm-6 col-xs-12">
+                                  <div class="product-short-details">
+                                      <h2 class="product-title">{{produit.nom}}</h2>
+                                      <p class="product-price"><b>{{produit.prix}} FCFA</b></p>
+                                      <p class="product-short-description">
+                                          {{produit.description | truncatechars_html:50}}
+                                      </p>
+                                      <h2>{{produit.stock}} en stock</h2><br>
+                                      <a class="btn btn-main" href="{% url 'details_produit' produit.slug %}" class="btn btn-transparent">Voir les détails du produit</a>
+                                  </div>
+                              </div>
+                            
+                              <div>
+                              <center>
+                              <form method="POST" action="{% url 'ajouter_au_panier' produit.slug %}">
+                                {% csrf_token %}
+                                <div class="product-quantity">
+                                    <div style="width:130px;" class="product-quantity">
+                                      <h3 style="display:inline-block;margin-top:30px">Quantité</h3>
+                                      <div style="margin-top:20px" class="product-quantity-slider">
+                                        <input id="product-quantity" type="number" value="1" name="product-quantity">
+                                      </div>
+                                    </div>
+                                </div>
+                                <button type="submit" id="btnAjout" class="btn btn-main mt-20">Ajouter au panier</button>
+                              </form>
+                              </center>
+                              </div>
+                          </div>
+                      </div>
+                 </div>
+                </div>
+          </div><!-- /.modal -->
+          {% endfor %}
+          </div>
+      </div>
+  </section>
+
+{% endif %}
+{% endblock content %}
+
+{% block jquery %}
+  <script type="text/javascript">
+    $(function(){
+      $("#rechercherParNom").hide();
+      $("#rechercherParCategorie").hide();
+      $("#rechercherParPrix").hide();
+      $("#buttonRechercher").hide();
+
+      $("select[name='choix']").on('change', function(){
+        var valeur = $(this).val();
+        if(valeur == 'Nom_du_produit'){
+            $("#rechercherParNom").show(500);
+            $("#rechercherParCategorie").hide(500);
+            $("#rechercherParCategorie").attr('name', 'categorie', '');
+            $("#rechercherParPrix").hide(500);
+            $("#rechercherParPrix").attr('name', 'prixmin', '');
+            $("#rechercherParPrix").attr('name', 'prixmax', '');
+            $("#buttonRechercher").show(500);
+        }else if(valeur == 'Nom_de_la_categorie'){
+            $("#rechercherParNom").hide(500);
+            $("#rechercherParNom").attr('name', 'nom', '');
+            $("#rechercherParCategorie").show(500);
+            $("#rechercherParPrix").hide(500);
+            $("#rechercherParPrix").attr('name', 'prixmin', '');
+            $("#rechercherParPrix").attr('name', 'prixmax', '');
+            $("#buttonRechercher").show(500);
+        }else if(valeur == 'Prix'){
+            $("#rechercherParNom").hide(500);
+            $("#rechercherParNom").attr('name', '');
+            $("#rechercherParCategorie").hide(500);
+            $("#rechercherParCategorie").attr('name', 'categorie', '');
+            $("#rechercherParPrix").show(500);
+            $("#buttonRechercher").show(500);
+        }else{
+            $("#rechercherParNom").hide(500);
+            $("#rechercherParCategorie").hide(500);
+            $("#rechercherParPrix").hide(500);
+            $("#buttonRechercher").hide(500);
+            $("#rechercherParNom").attr('name', 'nom', '');
+            $("#rechercherParCategorie").attr('name', 'categorie', '');
+            $("#rechercherParPrix").attr('name', 'prixmin', '');
+            $("#rechercherParPrix").attr('name', 'prixmax', '');
+        }
+      });
+    });
+  </script>
+{% endblock jquery %}

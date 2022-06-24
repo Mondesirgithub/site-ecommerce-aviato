@@ -1,0 +1,121 @@
+{% extends "boutique/index.html" %}
+
+{% load static %}
+
+{% block title %} Produit-details {% endblock title %}
+
+{% block content %}
+<section class="single-product">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<ol class="breadcrumb">
+					<li><a href="{% url 'index' %}">Accueil</a></li>
+					<li><a href="{% url 'boutique' %}">Boutique</a></li>
+					<li class="active">Details du produit</li>
+				</ol>
+			</div>
+			<div class="col-md-6">
+			</div>
+		</div>
+		{% if messages %}
+			{% for message in messages %}
+					<div  {% if message.tags == 'error' %}
+								class="alert alert-danger"
+								{% else %}
+								class="alert alert-{{message.tags}}"
+							{% endif %} >
+						{{ message }}
+					</div>
+			{% endfor %}
+		{% endif %}
+		<div class="row mt-20">
+			<div class="col-md-5">
+				<div class="single-product-slider">
+					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+						<div class='carousel-outer'>
+							<!-- me art lab slider -->
+							<div  class='carousel-inner '>
+								<div  class='item active' style="height: 400px" class='item active'>
+									<img style="width:100%;height:100%;" src='{{produit.image.url}}' alt='{{produit.nom}}' data-zoom-image="{{produit.image.url}}" />
+								</div>
+								{% for imageAssociee in images_associees_produit %}
+									<div  class='item' style="height: 400px">
+										<img style="width:100%;height:100%;" src='{{imageAssociee.image.url}}' alt='{{imageAssociee.produit.nom}}' data-zoom-image="{{imageAssociee.image.url}}" />
+									</div>
+								{% endfor %}
+							</div>
+							
+							<!-- sag sol -->
+							<a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+								<i class="tf-ion-ios-arrow-left"></i>
+							</a>
+							<a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+								<i class="tf-ion-ios-arrow-right"></i>
+							</a>
+						</div>
+						
+					<!-- thumb -->
+						<ol class='carousel-indicators mCustomScrollbar meartlab'>
+							<li data-target='#carousel-custom' data-slide-to='0' class='active'>
+								<img src='{{produit.image.url}}' alt='' />
+							</li>
+							{% for imageAssociee in images_associees_produit %}
+								<li data-target='#carousel-custom' data-slide-to='{{forloop.counter}}'>
+									<img src='{{imageAssociee.image.url}}' alt='{{imageAssociee.produit.nom}}' />
+								</li>
+							{% endfor %}
+						</ol>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<div class="single-product-details">
+					<b>Nom:</b><span style="font-size:20px"> {{produit.nom}}</span><br><br>
+					<b><span>Catégorie:</span></b> {{produit.categorie}}<br><br> 
+					<p class="product-price"><b>Prix :</b> {{produit.prix}} FCFA</p><br>
+					
+					<h4>
+						{{produit.stock}} en stock
+					</h4>
+					<form method="POST" action="{% url 'ajouter_au_panier' produit.slug %}">
+						{% csrf_token %}
+						<div class="product-quantity">
+								<div class="product-quantity">
+									<span>Quantité:</span>
+									<div class="product-quantity-slider">
+										<input id="product-quantity" type="number" value="1" name="product-quantity">
+									</div>
+								</div>
+						</div>
+						<button type="submit" id="btnAjout" class="btn btn-main mt-20">Ajouter au panier</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="tabCommon mt-20">
+					<ul class="nav nav-tabs">
+						<li class="active"><a data-toggle="tab" href="#details" aria-expanded="true">Description du produit</a></li>
+					</ul>
+					<div class="tab-content patternbg">
+						<div id="details" class="tab-pane fade active in">
+                            <p>{{produit.description}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock content %}
+
+{% block jquery %}
+	<script type="text/javascript">
+	$(function(){
+	$('input[id=\'product-quantity\']').TouchSpin();
+	});
+
+	</script>
+{% endblock jquery %}	

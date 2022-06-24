@@ -1,0 +1,33 @@
+{% extends 'boutique/index.html' %}
+{% load static %}
+{% block title %}Inscription{% endblock title %}
+
+{% block content %}
+<section class="signin-page account">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="block text-center">
+            <a class="logo" href="index.html">
+              <img style="margin-left:35px"src="{% static 'images/logo.png' %}" alt="">
+            </a>
+            <h2 style="margin-top:-360px" class="text-center">Création du compte</h2>
+            
+            <form enctype="multipart/form-data" class="text-left clearfix" method="POST">
+                {% csrf_token %}
+              <div class="form-group">
+                {{form.as_p}}
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-main text-center">Créer le compte</button>
+              </div>
+            </form>
+            <p class="mt-20">Avez vous déjà un compte ?<a href="{% url 'connexion' %}"> Connexion</a></p>
+            <p><a href="#"> Mot de passe oublié ?</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+{% endblock content %}

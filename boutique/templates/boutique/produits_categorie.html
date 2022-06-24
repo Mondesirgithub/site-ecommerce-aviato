@@ -1,0 +1,119 @@
+{% extends "boutique/index.html" %}
+{% load static %}
+
+{% block title %}
+Produits d'une categorie
+{% endblock title %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div  {% if message.tags == 'error' %}
+              class="alert alert-danger"
+              {% else %}
+              class="alert alert-{{message.tags}}"
+              {% endif %} >
+          {{ message }}
+        </div>
+    {% endfor %}
+  {% endif %}
+<section class="page-header">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="content">
+					<h1 class="page-name">Produits d'une categorie</h1>
+					<ol class="breadcrumb">
+            <li><a href="{% url 'index' %}">Accueil</a></li>
+						<li><a href="{% url 'boutique' %}">Magasin</a></li>
+						<li class="active">produits de la categorie {{categorie.nom}}</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+  <section class="products section bg-gray">
+      <div class="container">
+          <div class="row">
+              {% for produit in produits_categorie %}
+              <div class="col-md-4 col-sm-4 col-lg-4 col-xs-12">
+                  <div class="product-item">
+                      <div data-toggle="modal" data-target="#{{produit.slug}}-modal" class="product-thumb">
+                          <div style="height:280px">
+                          	 <img style="width:100%;height:100%;" src="{{ produit.image.url }}" alt="{{ produit.nom }}" />
+                          </div>
+                          <div class="preview-meta">
+                              <ul>
+                                  <li>
+                                      <a href="#!"><i class="tf-ion-android-search"></i></a>
+                                  </li>
+                              </ul>
+                            </div>
+                      </div>
+                      <div class="product-content">
+                          <h4><a href="product-single.html">{{produit.nom}}</a></h4>
+                          <p class="price">{{produit.prix}} FCFA</p>
+                      </div>
+                  </div>
+              </div>
+          <!-- Modal -->
+          <div class="modal product-modal fade" id="{{produit.slug}}-modal">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <i class="tf-ion-close"></i>
+              </button>
+                <div class="modal-dialog" role="document">
+                  <div class="text-center" class="modal-content">
+                        <div style="background-color:white; margin-left:-20px" class="modal-body">
+                          <div class="row">
+                              <div class="col-md-8 col-sm-6 col-xs-12">
+                                <center>
+                              <div style="height:280px;max-width:300px;">
+                                 <img style="width:100%;height:100%" src="{{ produit.image.url }}" alt="{{ produit.nom }}" />
+                              </div>
+                                </center>
+                              </div>
+                              <div class="col-md-4 col-sm-6 col-xs-12">
+                                  <div class="product-short-details">
+                                      <h2 class="product-title">{{produit.nom}}</h2>
+                                      <p class="product-price"><b>{{produit.prix}} FCFA</b></p>
+                                      <p class="product-short-description">
+                                          {{produit.description | truncatechars_html:50}}
+                                      </p>
+                                      <h2>{{produit.stock}} en stock</h2><br>
+                                      <a class="btn btn-main" href="{% url 'details_produit' produit.slug %}" class="btn btn-transparent">Voir les détails du produit</a>
+                                  </div>
+                              </div>
+                            
+                              <div>
+                              <center>
+                              <form method="POST" action="{% url 'ajouter_au_panier' produit.slug %}">
+                                {% csrf_token %}
+                                <div class="product-quantity">
+                                    <div style="width:130px;" class="product-quantity">
+                                      <h3 style="display:inline-block;margin-top:30px">Quantité</h3>
+                                      <div style="margin-top:20px" class="product-quantity-slider">
+                                        <input id="product-quantity" type="number" value="1" name="product-quantity">
+                                      </div>
+                                    </div>
+                                </div>
+                                <button type="submit" id="btnAjout" class="btn btn-main mt-20">Ajouter au panier</button>
+                              </form>
+                              </center>
+                              </div>
+                          </div>
+                      </div>
+                 </div>
+                </div>
+          </div><!-- /.modal -->
+              
+          {% empty %}
+              
+          <h3 class="text-center">Pas de produit</h3>
+
+          {% endfor %}
+          </div>
+      </div>
+  </section>
+
+{% endblock content %}
